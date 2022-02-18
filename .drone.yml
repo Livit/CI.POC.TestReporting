@@ -51,7 +51,7 @@ steps:
       - name: profile
         path: /root
     depends_on:
-      - copy-auto-test-settings
+      - cloudsmith-registry-auth
 
   - name: upload-test-restults
     image: say5/docker-aws-cli:0.0.3
