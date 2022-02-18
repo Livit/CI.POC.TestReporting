@@ -11,9 +11,6 @@ platform:
   os: linux
   arch: amd64
 
-clone:
-  disable: true
-
 steps:
   - name: cloudsmith-registry-auth
     image: bash
@@ -29,6 +26,58 @@ steps:
       - name: profile
         path: /root
 
+  - name: run-tests
+    image: unityci/editor:2020.3.21f1-webgl-0
+    commands:
+      - >-
+        unity-editor
+        -projectPath ./Asteroids
+        -logFile
+        -testPlatform playmode -runTests -testResults /build-output/test-results.xml
+        -debugCodeOptimization 
+        -enableCodeCoverage
+        -coverageResultsPath /build-output/coverage-report
+        -coverageHistoryPath /build-output/coverage-history
+        -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateHtmlReportHistory;generateBadgeReport;
+        assemblyFilters:+<project>,-<packages>;
+        pathFilters:-**/Tests/**,-**/BuiltInPackages/**;
+        verbosity:verbose"
+        
+      - echo "Finished run-tests"
+      - tree /build-output
+    volumes:
+      - name: build-output
+        path: /build-output
+      - name: profile
+        path: /root
+    depends_on:
+      - copy-auto-test-settings
+
+  - name: upload-test-restults
+    image: say5/docker-aws-cli:0.0.3
+    commands:
+      - ls /build-output
+      - LOGS_URL=$$(SKIP_GITHUB_STATUS=1 ./ci-scripts/upload.sh /build-output | grep "Artifacts url" | sed "s%Artifacts url\:\s*%%")
+      - echo $LOGS_URL
+    environment:
+      ARTIFACTS_SERVER:
+        from_secret: artifacts_server
+      ECR_ACCESS_KEY:
+        from_secret: ecr_access_key
+      ECR_SECRET_KEY:
+        from_secret: ecr_secret_key
+      GITHUB_TOKEN:
+        from_secret: github_token
+      S3_BUCKET:
+        from_secret: s3_bucket
+    depends_on:
+      - run-tests
+    volumes:
+      - name: build-output
+        path: /build-output
+
 volumes:
 - name: profile
+  temp: {}
+- name: build-output
   temp: {}
