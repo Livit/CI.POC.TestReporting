@@ -33,7 +33,7 @@ steps:
       - >-
         unity-editor
         -projectPath ./Asteroids
-        -logFile /build-output/tests.log
+        -logFile /dev/stdout
         -testPlatform playmode -runTests -testResults /build-output/test-results.xml
         -debugCodeOptimization 
         -enableCodeCoverage
