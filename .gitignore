@@ -59,3 +59,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# CodeCoverage reports
+*/CodeCoverage/
+*/ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json
