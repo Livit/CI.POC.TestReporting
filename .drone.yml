@@ -29,10 +29,11 @@ steps:
   - name: run-tests
     image: unityci/editor:2020.3.21f1-webgl-0
     commands:
+      - ls .
       - >-
         unity-editor
         -projectPath ./Asteroids
-        -logFile
+        -logFile /build-output/tests.log
         -testPlatform playmode -runTests -testResults /build-output/test-results.xml
         -debugCodeOptimization 
         -enableCodeCoverage
@@ -75,6 +76,8 @@ steps:
     volumes:
       - name: build-output
         path: /build-output
+    when: 
+      status: [success, failure]
 
 volumes:
 - name: profile
