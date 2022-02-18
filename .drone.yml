@@ -1,0 +1,35 @@
+---
+kind: pipeline
+type: docker
+name: run-tests
+
+trigger:
+  event:
+    - push
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+  - name: cloudsmith-registry-auth
+    image: bash
+    commands:
+      - "[ -z \"$CLOUDSMITH_TOKEN\" ] && echo \"cloudsmith_token not set\" && exit 2 || true"
+      - echo '[npmAuth."https://npm.cloudsmith.io/labster/unity"]' > ~/.upmconfig.toml
+      - echo "token = \"$CLOUDSMITH_TOKEN\"" >> ~/.upmconfig.toml
+      - echo "alwaysAuth = true" >> ~/.upmconfig.toml
+    environment:
+      CLOUDSMITH_TOKEN:
+        from_secret: cloudsmith_token
+    volumes:
+      - name: profile
+        path: /root
+
+
+volumes:
+- name: profile
+  temp: {}
