@@ -40,6 +40,30 @@ steps:
       - name: profile
         path: /root
 
+  - name: download-coverage-history
+    image: say5/docker-aws-cli:0.0.3
+    failure: ignore
+    commands:
+      - chmod -R 755 ./ci-scripts
+      - ./ci-scripts/aws-cp.sh s3://S3_BUCKET/$DRONE_REPO_NAME/coverage-history /coverage-history --recursive
+      - ls /coverage-history
+    environment:
+      ARTIFACTS_SERVER:
+        from_secret: artifacts_server
+      ECR_ACCESS_KEY:
+        from_secret: ecr_access_key
+      ECR_SECRET_KEY:
+        from_secret: ecr_secret_key
+      GITHUB_TOKEN:
+        from_secret: github_token
+      S3_BUCKET:
+        from_secret: s3_bucket
+    depends_on:
+      - run-tests
+    volumes:
+      - name: coverage-history
+        path: /coverage-history
+
   - name: run-tests
     image: unityci/editor:2020.3.21f1-webgl-0
     commands:
@@ -52,7 +76,7 @@ steps:
         -debugCodeOptimization 
         -enableCodeCoverage
         -coverageResultsPath /build-output/coverage-report
-        -coverageHistoryPath /build-output/coverage-history
+        -coverageHistoryPath /coverage-history
         -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateHtmlReportHistory;generateBadgeReport;
         assemblyFilters:+<project>,-<packages>;
         pathFilters:-**/Tests/**,-**/BuiltInPackages/**;
@@ -63,13 +87,16 @@ steps:
     volumes:
       - name: build-output
         path: /build-output
+      - name: coverage-history
+        path: /coverage-history
       - name: profile
         path: /root
     depends_on:
       - cloudsmith-registry-auth
       - untiy-activate-license
+      - download-coverage-history
 
-  - name: upload-test-restults
+  - name: upload-test-results
     image: say5/docker-aws-cli:0.0.3
     commands:
       - ls /build-output
@@ -95,8 +122,33 @@ steps:
     when: 
       status: [success, failure]
 
+  - name: upload-coverage-history
+    image: say5/docker-aws-cli:0.0.3
+    commands:
+      - ls -lt /coverage-history
+      - chmod -R 755 ./ci-scripts
+      - FILE_NAME="$(ls -t coverage-history | head -1)"
+      - echo $FILE_NAME
+      - ./ci-scripts/aws-cp.sh "/coverage-history/$FILE_NAME" "s3://S3_BUCKET/$DRONE_REPO_NAME/coverage-history"
+    environment:
+      ARTIFACTS_SERVER:
+        from_secret: artifacts_server
+      ECR_ACCESS_KEY:
+        from_secret: ecr_access_key
+      ECR_SECRET_KEY:
+        from_secret: ecr_secret_key
+      S3_BUCKET:
+        from_secret: s3_bucket
+    depends_on:
+      - run-tests
+    volumes:
+      - name: coverage-history
+        path: /coverage-history
+
 volumes:
 - name: profile
   temp: {}
 - name: build-output
+  temp: {}
+- name: coverage-history
   temp: {}
