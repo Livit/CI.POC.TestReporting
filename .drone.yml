@@ -58,8 +58,6 @@ steps:
         from_secret: github_token
       S3_BUCKET:
         from_secret: s3_bucket
-    depends_on:
-      - run-tests
     volumes:
       - name: coverage-history
         path: /coverage-history
