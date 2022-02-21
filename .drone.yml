@@ -125,7 +125,7 @@ steps:
     commands:
       - ls -lt /coverage-history
       - chmod -R 755 ./ci-scripts
-      - FILE_NAME="$(ls -t coverage-history | head -1)"
+      - FILE_NAME="$(ls -t /coverage-history | head -1)"
       - echo $FILE_NAME
       - ./ci-scripts/aws-cp.sh "/coverage-history/$FILE_NAME" "s3://S3_BUCKET/$DRONE_REPO_NAME/coverage-history"
     environment:
