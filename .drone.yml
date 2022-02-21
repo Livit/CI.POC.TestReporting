@@ -59,7 +59,7 @@ steps:
         verbosity:verbose"
         
       - echo "Finished run-tests"
-      - tree /build-output
+      - ls -Rhl /build-output
     volumes:
       - name: build-output
         path: /build-output
