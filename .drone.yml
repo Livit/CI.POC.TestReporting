@@ -76,7 +76,7 @@ steps:
         -coverageResultsPath /build-output/coverage-report
         -coverageHistoryPath /coverage-history
         -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateHtmlReportHistory;generateBadgeReport;
-        assemblyFilters:+<project>,-<packages>;
+        assemblyFilters:+<project>,-<packages>,-*.Tests;
         pathFilters:-**/Tests/**,-**/BuiltInPackages/**;
         verbosity:verbose"
         
