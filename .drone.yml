@@ -45,7 +45,7 @@ steps:
     failure: ignore
     commands:
       - chmod -R 755 ./ci-scripts
-      - ./ci-scripts/aws-cp.sh s3://S3_BUCKET/$DRONE_REPO_NAME/coverage-history /coverage-history --recursive
+      - ./ci-scripts/aws-cp.sh s3://$S3_BUCKET/$DRONE_REPO_NAME/coverage-history /coverage-history --recursive
       - ls /coverage-history
     environment:
       ARTIFACTS_SERVER:
@@ -127,7 +127,7 @@ steps:
       - chmod -R 755 ./ci-scripts
       - FILE_NAME="$(ls -t /coverage-history | head -1)"
       - echo $FILE_NAME
-      - ./ci-scripts/aws-cp.sh "/coverage-history/$FILE_NAME" "s3://S3_BUCKET/$DRONE_REPO_NAME/coverage-history"
+      - ./ci-scripts/aws-cp.sh "/coverage-history/$FILE_NAME" "s3://$S3_BUCKET/$DRONE_REPO_NAME/coverage-history"
     environment:
       ARTIFACTS_SERVER:
         from_secret: artifacts_server
