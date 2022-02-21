@@ -12,6 +12,20 @@ platform:
   arch: amd64
 
 steps:
+
+  - name: untiy-activate-license
+    image: unityci/editor:2020.3.21f1-webgl-0
+    commands:
+      - mkdir -p $(dirname "$UNITY_LICENSE_PATH") 
+      - echo "$${UNITY_LICENSE}" > "$UNITY_LICENSE_PATH"
+    volumes:
+      - name: profile
+        path: /root
+    environment:
+      UNITY_LICENSE_PATH: "/root/.local/share/unity3d/Unity/Unity_lic.ulf"
+      UNITY_LICENSE:
+        from_secret: unity_license
+
   - name: cloudsmith-registry-auth
     image: bash
     commands:
@@ -53,6 +67,7 @@ steps:
         path: /root
     depends_on:
       - cloudsmith-registry-auth
+      - untiy-activate-license
 
   - name: upload-test-restults
     image: say5/docker-aws-cli:0.0.3
