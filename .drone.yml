@@ -76,7 +76,7 @@ steps:
         -coverageResultsPath /build-output/coverage-report
         -coverageHistoryPath /coverage-history
         -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateHtmlReportHistory;generateBadgeReport;
-        assemblyFilters:-Unity.TestTools.CodeCoverage.Sample.Asteroids.Tests,+<project>,-<packages>;
+        assemblyFilters:-Unity.TestTools.CodeCoverage.Sample.Asteroids.Tests,-<packages>;
         pathFilters:-**/Tests/**,-**/BuiltInPackages/**;
         verbosity:verbose"
         
