@@ -80,9 +80,9 @@ steps:
       ARTIFACTS_SERVER:
         from_secret: artifacts_server
       ECR_ACCESS_KEY:
-        from_secret: cache_s3_access_key
+        from_secret: ecr_access_key
       ECR_SECRET_KEY:
-        from_secret: cache_s3_secret_key
+        from_secret: ecr_secret_key
       GITHUB_TOKEN:
         from_secret: github_token
       S3_BUCKET:
