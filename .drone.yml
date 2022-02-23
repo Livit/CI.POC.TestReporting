@@ -94,6 +94,21 @@ steps:
       - untiy-activate-license
       - download-coverage-history
 
+
+  - name: upload-codecov
+    image: plugins/codecov
+    settings:
+      token: 066047a4-94d3-4fc2-b62e-6930a3058a92
+      files:
+        - /build-output/coverage-report/**/TestCoverageResults*.xml
+    volumes:
+      - name: build-output
+        path: /build-output
+    depends_on:
+      - run-tests
+    when: 
+      status: [success, failure]
+
   - name: upload-test-results
     image: say5/docker-aws-cli:0.0.3
     commands:
