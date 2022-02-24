@@ -100,7 +100,7 @@ steps:
     settings:
       token: '066047a4-94d3-4fc2-b62e-6930a3058a92'
       files:
-        - /build-output/coverage-report/**/TestCoverageResults*.xml
+        - '*TestCoverageResults*.xml'
       paths: 
         - /build-output/coverage-report/*
     volumes:
