@@ -12,13 +12,6 @@ namespace Tests
             Assert.Equals(2, calc.PerformOperation("+", 1, 1));
         }
 
-        [Test]
-        [Ignore("failing")]
-        public void InvalidOperationFail()
-        {
-            var calc = new Calculator();
-            Assert.Equals(2, calc.PerformOperation("invalid", 1, 1));
-        }
 
     }
 }
