@@ -9,7 +9,7 @@ namespace Tests
         public void One_Plus_One_Should_Return_Two()
         {
             var calc = new Calculator();
-            Assert.Equals(2, calc.PerformOperation("+", 1, 1));
+            Assert.IsTrue(2 == calc.PerformOperation("+", 1, 1));
         }
 
 
